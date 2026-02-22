@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
-import { useToast } from '../hooks/use-toast';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import React, { useState } from "react";
+import { useToast } from "../hooks/use-toast";
+import { Mail, Phone, MapPin, Send } from "lucide-react";
 
 const Contact = () => {
   const { toast } = useToast();
-  const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
+  const backendUrl =
+    process.env.REACT_APP_BACKEND_URL ||
+    "https://abhimanyu-holidays.onrender.com";
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: ''
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
   });
 
   const handleSubmit = async (e) => {
@@ -19,27 +21,28 @@ const Contact = () => {
     setIsSubmitting(true);
     try {
       const response = await fetch(`${backendUrl}/api/contact`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit contact form');
+        throw new Error("Failed to submit contact form");
       }
 
       toast({
         title: "Message Sent!",
-        description: "Thank you for contacting us. We'll get back to you shortly.",
+        description:
+          "Thank you for contacting us. We'll get back to you shortly.",
       });
       setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: ''
+        name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
       });
     } catch (error) {
       toast({
@@ -62,7 +65,9 @@ const Contact = () => {
       <div className="bg-gradient-to-r from-orange-600 to-blue-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Contact Us</h1>
-          <p className="text-xl">Get in touch with us for any queries or assistance</p>
+          <p className="text-xl">
+            Get in touch with us for any queries or assistance
+          </p>
         </div>
       </div>
 
@@ -70,9 +75,13 @@ const Contact = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Information */}
           <div>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Get In Touch</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              Get In Touch
+            </h2>
             <p className="text-gray-600 mb-8">
-              Have questions about our services? We're here to help! Reach out to us through any of the following channels or fill out the contact form.
+              Have questions about our services? We're here to help! Reach out
+              to us through any of the following channels or fill out the
+              contact form.
             </p>
 
             <div className="space-y-6">
@@ -81,8 +90,12 @@ const Contact = () => {
                   <MapPin className="text-orange-600" size={24} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">Visit Us</h3>
-                  <p className="text-gray-600">4/164 SFS Near B2 Bypass Mansarovar</p>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    Visit Us
+                  </h3>
+                  <p className="text-gray-600">
+                    4/164 SFS Near B2 Bypass Mansarovar
+                  </p>
                   <p className="text-gray-600">Nearby Airport Jaipur</p>
                 </div>
               </div>
@@ -92,7 +105,9 @@ const Contact = () => {
                   <Phone className="text-blue-600" size={24} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">Call Us</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    Call Us
+                  </h3>
                   <p className="text-gray-600">+91 9587084879</p>
                   <p className="text-gray-600">+91 9829301061</p>
                 </div>
@@ -103,17 +118,25 @@ const Contact = () => {
                   <Mail className="text-green-600" size={24} />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">Email Us</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    Email Us
+                  </h3>
                   <p className="text-gray-600">info@abhimanyuholidays.com</p>
                 </div>
               </div>
             </div>
 
             <div className="mt-8 bg-orange-50 border-l-4 border-orange-600 p-6 rounded">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Business Hours</h3>
-              <p className="text-gray-700">Monday - Saturday: 9:00 AM - 8:00 PM</p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Business Hours
+              </h3>
+              <p className="text-gray-700">
+                Monday - Saturday: 9:00 AM - 8:00 PM
+              </p>
               <p className="text-gray-700">Sunday: 10:00 AM - 6:00 PM</p>
-              <p className="text-orange-600 font-semibold mt-2">24/7 Emergency Support Available</p>
+              <p className="text-orange-600 font-semibold mt-2">
+                24/7 Emergency Support Available
+              </p>
             </div>
           </div>
 
@@ -122,7 +145,9 @@ const Contact = () => {
             <div className="bg-white rounded-lg shadow-lg p-8">
               <div className="flex items-center mb-6">
                 <Send className="text-orange-600 mr-3" size={32} />
-                <h2 className="text-2xl font-bold text-gray-900">Send Us a Message</h2>
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Send Us a Message
+                </h2>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -197,7 +222,7 @@ const Contact = () => {
                   className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-md font-semibold transition-colors flex items-center justify-center"
                 >
                   <Send className="mr-2" size={20} />
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </button>
               </form>
             </div>

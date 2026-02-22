@@ -1,38 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { oneDayTours } from '../data/mockData';
-import { Clock, MapPin, ArrowLeft, Calendar, Users } from 'lucide-react';
-import { useToast } from '../hooks/use-toast';
+import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { oneDayTours } from "../data/mockData";
+import { Clock, MapPin, ArrowLeft, Calendar, Users } from "lucide-react";
+import { useToast } from "../hooks/use-toast";
 
 const TourDetail = () => {
   const { id } = useParams();
   const { toast } = useToast();
+  const backendUrl =
+    process.env.REACT_APP_BACKEND_URL || "https://abhimanyu-holidays.onrender.com";
   const [apiTour, setApiTour] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const tour = oneDayTours.find((t) => t.id === id) || apiTour;
-  
+
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    date: '',
-    adults: '1',
-    children: '0',
-    message: ''
+    name: "",
+    email: "",
+    phone: "",
+    date: "",
+    adults: "1",
+    children: "0",
+    message: "",
   });
 
   useEffect(() => {
     const fetchTour = async () => {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000'}/api/one-day-tours/${id}`,
+          `${backendUrl}/api/one-day-tours/${id}`,
         );
         if (response.ok) {
           const data = await response.json();
           setApiTour(data);
         }
       } catch (error) {
-        console.error('Error fetching one day tour detail:', error);
+        console.error("Error fetching one day tour detail:", error);
       } finally {
         setIsLoading(false);
       }
@@ -44,7 +47,7 @@ const TourDetail = () => {
     }
 
     fetchTour();
-  }, [id]);
+  }, [id, backendUrl]);
 
   if (isLoading) {
     return (
@@ -58,8 +61,13 @@ const TourDetail = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Tour not found</h2>
-          <Link to="/one-day-tours" className="text-orange-600 hover:text-orange-700">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Tour not found
+          </h2>
+          <Link
+            to="/one-day-tours"
+            className="text-orange-600 hover:text-orange-700"
+          >
             Back to Tours
           </Link>
         </div>
@@ -67,22 +75,49 @@ const TourDetail = () => {
     );
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Mock booking submission
-    toast({
-      title: "Booking Request Submitted!",
-      description: "We'll contact you shortly to confirm your tour booking.",
-    });
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      date: '',
-      adults: '1',
-      children: '0',
-      message: ''
-    });
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`${backendUrl}/api/one-day-tours/${id}/bookings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...formData,
+          adults: Number(formData.adults),
+          children: Number(formData.children),
+          tour_title: tour.title,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit booking");
+      }
+
+      toast({
+        title: "Booking Request Submitted!",
+        description: "We'll contact you shortly to confirm your tour booking.",
+      });
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        date: "",
+        adults: "1",
+        children: "0",
+        message: "",
+      });
+    } catch (error) {
+      toast({
+        title: "Booking Failed",
+        description: "Booking submit nahi ho payi. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -113,7 +148,9 @@ const TourDetail = () => {
               alt={tour.title}
               className="w-full h-96 object-cover rounded-lg shadow-lg mb-6"
             />
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">{tour.title}</h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              {tour.title}
+            </h1>
             <p className="text-xl text-gray-600 mb-6">{tour.description}</p>
 
             <div className="flex items-center space-x-6 mb-6">
@@ -121,11 +158,15 @@ const TourDetail = () => {
                 <Clock className="mr-2 text-orange-600" size={20} />
                 <span className="font-semibold">{tour.duration}</span>
               </div>
-              <div className="text-2xl font-bold text-orange-600">{tour.price}</div>
+              <div className="text-2xl font-bold text-orange-600">
+                {tour.price}
+              </div>
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Tour Highlights</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Tour Highlights
+              </h3>
               <ul className="space-y-2">
                 {tour.highlights.map((highlight, index) => (
                   <li key={index} className="flex items-start">
@@ -137,7 +178,9 @@ const TourDetail = () => {
             </div>
 
             <div className="bg-blue-50 rounded-lg p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Tour Details</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                Tour Details
+              </h3>
               <p className="text-gray-700 leading-relaxed">{tour.details}</p>
             </div>
           </div>
@@ -145,7 +188,9 @@ const TourDetail = () => {
           {/* Booking Form */}
           <div>
             <div className="bg-white rounded-lg shadow-lg p-8 sticky top-24">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Book This Tour</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                Book This Tour
+              </h2>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -241,9 +286,10 @@ const TourDetail = () => {
                 </div>
                 <button
                   type="submit"
+                  disabled={isSubmitting}
                   className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-md font-semibold transition-colors"
                 >
-                  Submit Booking Request
+                  {isSubmitting ? "Submitting..." : "Submit Booking Request"}
                 </button>
               </form>
             </div>

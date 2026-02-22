@@ -235,13 +235,12 @@ async def delete_one_day_tour(tour_id: str, current_user: str = Depends(get_curr
 @api_router.post("/one-day-tours/{tour_id}/bookings")
 async def create_tour_booking(tour_id: str, booking: TourBookingCreate):
     tour = await one_day_tours_collection.find_one({"id": tour_id})
-    if not tour:
-        raise HTTPException(status_code=404, detail="Tour not found")
+    tour_title = tour['title'] if tour else (booking.tour_title or tour_id)
     
     tour_booking = TourBooking(
         booking_type="one-day-tour",
         tour_id=tour_id,
-        tour_title=tour['title'],
+        tour_title=tour_title,
         customer_name=booking.name,
         customer_email=booking.email,
         customer_phone=booking.phone,

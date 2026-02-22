@@ -57,7 +57,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "BABEL_ENV=production NODE_ENV=production craco build",
     "test": "craco test"
   },
   "browserslist": {

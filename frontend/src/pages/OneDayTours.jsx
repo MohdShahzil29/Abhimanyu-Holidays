@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import TourCard from '../components/TourCard';
-import { oneDayTours } from '../data/mockData';
+import React, { useEffect, useMemo, useState } from "react";
+import TourCard from "../components/TourCard";
+import { oneDayTours } from "../data/mockData";
 
 const OneDayTours = () => {
   const [apiTours, setApiTours] = useState([]);
@@ -9,13 +9,13 @@ const OneDayTours = () => {
     const fetchTours = async () => {
       try {
         const response = await fetch(
-          `${process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000'}/api/one-day-tours`,
+          `${process.env.REACT_APP_BACKEND_URL || "https://abhimanyu-holidays.onrender.com"}/api/one-day-tours`,
         );
         if (!response.ok) return;
         const data = await response.json();
         setApiTours(Array.isArray(data) ? data : []);
       } catch (error) {
-        console.error('Error fetching one day tours:', error);
+        console.error("Error fetching one day tours:", error);
       }
     };
 
@@ -39,7 +39,9 @@ const OneDayTours = () => {
       <div className="bg-gradient-to-r from-orange-600 to-blue-600 text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">One Day Tours</h1>
-          <p className="text-xl">Experience the best of Jaipur and beyond in a single day</p>
+          <p className="text-xl">
+            Experience the best of Jaipur and beyond in a single day
+          </p>
         </div>
       </div>
 

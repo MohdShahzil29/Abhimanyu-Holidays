@@ -95,6 +95,7 @@ class TourBookingCreate(BaseModel):
     date: str
     adults: int
     children: int
+    tour_title: Optional[str] = ''
     message: Optional[str] = ''
 
 class TaxiBooking(BaseModel):

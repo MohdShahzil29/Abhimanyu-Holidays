@@ -11,6 +11,7 @@ import {
   Check,
   XCircle,
   Trash2,
+  CalendarDays,
 } from "lucide-react";
 
 const Admin = () => {
@@ -20,6 +21,7 @@ const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [contactSubmissions, setContactSubmissions] = useState([]);
   const [hotelBookings, setHotelBookings] = useState([]);
+  const [tourBookings, setTourBookings] = useState([]);
   const [oneDayTours, setOneDayTours] = useState([]);
   const [tourPackages, setTourPackages] = useState([]);
   const [deletingTourId, setDeletingTourId] = useState(null);
@@ -52,6 +54,7 @@ const Admin = () => {
     setIsAuthenticated(true);
     fetchContactSubmissions();
     fetchHotelBookings();
+    fetchTourBookings();
     fetchOneDayTours();
     fetchTourPackages();
   }, [navigate]);
@@ -63,6 +66,9 @@ const Admin = () => {
     }
     if (activeTab === "hotel-bookings") {
       fetchHotelBookings();
+    }
+    if (activeTab === "tour-bookings") {
+      fetchTourBookings();
     }
     if (activeTab === "one-day-tour") {
       fetchOneDayTours();
@@ -94,7 +100,7 @@ const Admin = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL || "http://localhost:8000"}/api/admin/contact-submissions`,
+        `${process.env.REACT_APP_BACKEND_URL || "https://abhimanyu-holidays.onrender.com"}/api/admin/contact-submissions`,
         {
           cache: "no-store",
           headers: {
@@ -117,7 +123,7 @@ const Admin = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL || "http://localhost:8000"}/api/admin/hotel-bookings`,
+        `${process.env.REACT_APP_BACKEND_URL || "https://abhimanyu-holidays.onrender.com"}/api/admin/hotel-bookings`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -133,11 +139,31 @@ const Admin = () => {
     }
   };
 
+  const fetchTourBookings = async () => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL || "https://abhimanyu-holidays.onrender.com"}/api/admin/tour-bookings`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setTourBookings(Array.isArray(data) ? data : []);
+      }
+    } catch (error) {
+      console.error("Error fetching tour bookings:", error);
+    }
+  };
+
   const fetchOneDayTours = async () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL || "http://localhost:8000"}/api/admin/one-day-tours`,
+        `${process.env.REACT_APP_BACKEND_URL || "https://abhimanyu-holidays.onrender.com"}/api/admin/one-day-tours`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -157,7 +183,7 @@ const Admin = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL || "http://localhost:8000"}/api/admin/tour-packages`,
+        `${process.env.REACT_APP_BACKEND_URL || "https://abhimanyu-holidays.onrender.com"}/api/admin/tour-packages`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -177,7 +203,7 @@ const Admin = () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL || "http://localhost:8000"}/api/admin/contact-submissions/${submissionId}`,
+        `${process.env.REACT_APP_BACKEND_URL || "https://abhimanyu-holidays.onrender.com"}/api/admin/contact-submissions/${submissionId}`,
         {
           method: "PATCH",
           headers: {
@@ -205,7 +231,7 @@ const Admin = () => {
       setDeletingTourId(tourId);
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL || "http://localhost:8000"}/api/admin/one-day-tours/${tourId}`,
+        `${process.env.REACT_APP_BACKEND_URL || "https://abhimanyu-holidays.onrender.com"}/api/admin/one-day-tours/${tourId}`,
         {
           method: "DELETE",
           headers: {
@@ -239,7 +265,7 @@ const Admin = () => {
       setDeletingPackageId(packageId);
       const token = localStorage.getItem("adminToken");
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL || "http://localhost:8000"}/api/admin/tour-packages/${packageId}`,
+        `${process.env.REACT_APP_BACKEND_URL || "https://abhimanyu-holidays.onrender.com"}/api/admin/tour-packages/${packageId}`,
         {
           method: "DELETE",
           headers: {
@@ -350,7 +376,7 @@ const Admin = () => {
       formData.append("image", oneDayTourData.image);
 
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL || "http://localhost:8000"}/api/admin/one-day-tours`,
+        `${process.env.REACT_APP_BACKEND_URL || "https://abhimanyu-holidays.onrender.com"}/api/admin/one-day-tours`,
         {
           method: "POST",
           headers: {
@@ -407,7 +433,7 @@ const Admin = () => {
       formData.append("image", tourPackageData.image);
 
       const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL || "http://localhost:8000"}/api/admin/tour-packages`,
+        `${process.env.REACT_APP_BACKEND_URL || "https://abhimanyu-holidays.onrender.com"}/api/admin/tour-packages`,
         {
           method: "POST",
           headers: {
@@ -510,6 +536,17 @@ const Admin = () => {
           >
             <MessageSquare size={18} />
             <span>Contact Inquiries ({contactSubmissions.length})</span>
+          </button>
+          <button
+            onClick={() => setActiveTab("tour-bookings")}
+            className={`px-4 py-3 font-semibold transition-colors flex items-center space-x-2 ${
+              activeTab === "tour-bookings"
+                ? "border-b-2 border-orange-600 text-orange-600"
+                : "text-gray-600 hover:text-orange-600"
+            }`}
+          >
+            <CalendarDays size={18} />
+            <span>Tour Bookings ({tourBookings.length})</span>
           </button>
           <button
             onClick={() => setActiveTab("hotel-bookings")}
@@ -703,7 +740,9 @@ const Admin = () => {
                         className="w-full md:w-28 h-20 object-cover rounded"
                       />
                       <div className="flex-1">
-                        <p className="font-semibold text-gray-900">{tour.title}</p>
+                        <p className="font-semibold text-gray-900">
+                          {tour.title}
+                        </p>
                         <p className="text-sm text-gray-600">
                           {tour.duration} • {tour.price}
                         </p>
@@ -890,7 +929,9 @@ const Admin = () => {
                         className="w-full md:w-28 h-20 object-cover rounded"
                       />
                       <div className="flex-1">
-                        <p className="font-semibold text-gray-900">{pkg.title}</p>
+                        <p className="font-semibold text-gray-900">
+                          {pkg.title}
+                        </p>
                         <p className="text-sm text-gray-600">
                           {pkg.duration} • {pkg.price}
                         </p>
@@ -903,7 +944,9 @@ const Admin = () => {
                         className="inline-flex items-center justify-center px-3 py-2 rounded-md text-sm font-medium bg-red-50 text-red-700 hover:bg-red-100 disabled:opacity-60"
                       >
                         <Trash2 size={16} className="mr-1" />
-                        {deletingPackageId === pkg.id ? "Deleting..." : "Delete"}
+                        {deletingPackageId === pkg.id
+                          ? "Deleting..."
+                          : "Delete"}
                       </button>
                     </div>
                   ))}
@@ -1000,6 +1043,82 @@ const Admin = () => {
                       </p>
                       <p className="text-gray-700">{submission.message}</p>
                     </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Tour Bookings Tab */}
+        {activeTab === "tour-bookings" && (
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <div className="flex items-center mb-6">
+              <CalendarDays className="text-orange-600 mr-3" size={32} />
+              <h2 className="text-2xl font-bold text-gray-900">
+                Tour Bookings
+              </h2>
+              <button
+                type="button"
+                onClick={fetchTourBookings}
+                className="ml-auto text-sm font-medium text-orange-600 hover:text-orange-700"
+              >
+                Refresh
+              </button>
+            </div>
+
+            {tourBookings.length === 0 ? (
+              <div className="text-center py-12">
+                <CalendarDays className="text-gray-400 mx-auto mb-4" size={48} />
+                <p className="text-gray-500">No tour bookings yet.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {tourBookings.map((booking) => (
+                  <div
+                    key={booking.id}
+                    className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                  >
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h3 className="font-semibold text-lg">
+                          {booking.tour_title}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          {booking.booking_type} • {booking.tour_id}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Customer: {booking.customer_name} •{" "}
+                          {booking.customer_email}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Phone: {booking.customer_phone}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Booking ID: {booking.id} •{" "}
+                          {new Date(booking.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-orange-600">
+                          {booking.adults} adults, {booking.children} children
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Date:{" "}
+                          {new Date(booking.booking_date).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                    {booking.special_requests && (
+                      <div className="mt-3 bg-blue-50 p-3 rounded">
+                        <p className="text-sm font-medium text-blue-700 mb-1">
+                          Special Requests:
+                        </p>
+                        <p className="text-blue-700">
+                          {booking.special_requests}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
